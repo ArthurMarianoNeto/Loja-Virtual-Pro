@@ -1,12 +1,27 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
-void main() {
+void main()  async {
   runApp(MyApp());
 
-  Firestore.instance.collection('Pedidos').document('#0001').setData(
+ /* Firestore.instance.collection('Pedidos').document('#0001').setData(
       {'preco': 199.99, 'usuário' : 'Arthur Mariano'}
-      );
+      ); */
+
+/*  Firestore.instance.collection('Pedidos').document('#0002').setData(
+   {'Preco': 299.00, 'usuario': 'Joaquina'}
+    ); */
+
+/* Firestore.instance.collection('Pedidos').document('#0002').updateData(
+   {'Preco': 99.00, 'usuario': 'Chiquinha da Silva'}
+    ); */
+
+/*   Firestore.instance.document('Pedidos/#0002').updateData(
+   {'Preco': 99.00, 'usuario': 'Chiquinha da Silva 2'} // o nome das colunas levam em conta Sensitive Key
+    ); */
+
+  DocumentSnapshot document = await Firestore.instance.collection('Pedidos').document('#0002').get();
+  print(document.data);
 }
 
 class MyApp extends StatelessWidget {
