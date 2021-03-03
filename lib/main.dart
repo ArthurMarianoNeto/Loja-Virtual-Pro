@@ -20,9 +20,25 @@ void main()  async {
    {'Preco': 99.00, 'usuario': 'Chiquinha da Silva 2'} // o nome das colunas levam em conta Sensitive Key
     ); */
 
-  DocumentSnapshot document = await Firestore.instance.collection('Pedidos').document('#0002').get();
+/*  DocumentSnapshot document = await Firestore.instance.collection('Pedidos').document('#0002').get();
+  print(document.data['usuario']); */
+
+/*  Firestore.instance.collection('Pedidos').document('#0002').snapshots().listen((document) {
   print(document.data);
-}
+  }); */
+
+/*  QuerySnapshot snapshot = await Firestore.instance.collection('Pedidos').getDocuments();
+  for(DocumentSnapshot document in snapshot.documents){
+    print(document.data);
+  } */
+
+  Firestore.instance.collection('Pedidos').snapshots().listen((snapshot) {
+    for(DocumentSnapshot document in snapshot.documents) {
+      print(document.data);
+    }
+  });
+
+  }
 
 class MyApp extends StatelessWidget {
   // This widget is the root of your application.
