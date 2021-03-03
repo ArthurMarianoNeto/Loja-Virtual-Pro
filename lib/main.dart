@@ -1,7 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:loja_virtual_pro/screens/base/base_screen.dart';
 
-void main()  async {
+void main()   {
   runApp(MyApp());
 
  /* Firestore.instance.collection('Pedidos').document('#0001').setData(
@@ -32,29 +33,25 @@ void main()  async {
     print(document.data);
   } */
 
-  Firestore.instance.collection('Pedidos').snapshots().listen((snapshot) {
+/*  Firestore.instance.collection('Pedidos').snapshots().listen((snapshot) {
     for(DocumentSnapshot document in snapshot.documents) {
       print(document.data);
     }
-  });
+  }); */
 
   }
 
 class MyApp extends StatelessWidget {
-  // This widget is the root of your application.
-  @override
+ @override
   Widget build(BuildContext context) {
-      if(true) {
-        print("Testando Software");
-      }
-
     return MaterialApp(
-      title: 'Flutter Demo',
+      title: 'Loja MegaModa',
+      debugShowCheckedModeBanner: false,
       theme: ThemeData(
         primarySwatch: Colors.blue,
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
-      home: Container(),
+      home: BaseScreen(),
      );
   }
 }
