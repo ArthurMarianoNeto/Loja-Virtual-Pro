@@ -6,24 +6,11 @@ class CustomDrawer extends StatelessWidget {
   Widget build(BuildContext context) {
     return Drawer(
       child: ListView(
-        children: [
-          DrawerTile(
-            iconData: Icons.home,
-            title: 'Início',
-            page: 0,
-          ),
-          DrawerTile(iconData: Icons.list,
-            title: 'Produtos',
-            page: 1,
-          ),
-          DrawerTile(iconData: Icons.playlist_add_check,
-            title: 'Meus Pedidos',
-            page: 2,
-          ),
-          DrawerTile(iconData: Icons.location_on,
-            title: 'Lojas',
-            page: 3,
-          ),
+        children: <Widget>[
+          DrawerTile(iconData: Icons.home, title: 'Início', page: 0,),
+          DrawerTile(iconData: Icons.list, title: 'Produtos', page: 1,),
+          DrawerTile(iconData: Icons.playlist_add_check, title: 'Meus Pedidos', page: 2,),
+          DrawerTile(iconData: Icons.location_on, title: 'Lojas', page: 3,),
           ],
         ),
     );
