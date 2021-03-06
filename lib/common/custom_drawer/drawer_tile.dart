@@ -18,7 +18,7 @@ class DrawerTile extends StatelessWidget {
         ),
         Text(
           title,
-          style: TextStyle(,
+          style: TextStyle(
           fontSize: 16,
           color: Colors.grey[700]
         ),
