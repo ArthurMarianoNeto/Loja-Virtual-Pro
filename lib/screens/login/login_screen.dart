@@ -19,6 +19,18 @@ class LoginScreen extends StatelessWidget {
       appBar: AppBar(
         title: const Text('Tela de Login'),
         centerTitle: true,
+        actions: [
+          FlatButton(
+              onPressed: (){
+                Navigator.of(context).pushReplacementNamed('/signup');
+          },
+            textColor: Colors.white,
+              child: const Text(
+                'Criar Conta',
+                style: TextStyle(fontSize: 18),
+              ),
+          )
+        ],
       ),
       body: Center(
         child: Card(
