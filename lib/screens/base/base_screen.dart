@@ -35,9 +35,9 @@ class BaseScreen extends StatelessWidget {
               title: const Text('Lojas'),
             ),
           ),
-          Container(color: Colors.red,),
-          Container(color: Colors.yellow,),
-          Container(color: Colors.green,),
+//          Container(color: Colors.red,),
+//          Container(color: Colors.yellow,),
+//          Container(color: Colors.green,),
         ],
       ),
     );

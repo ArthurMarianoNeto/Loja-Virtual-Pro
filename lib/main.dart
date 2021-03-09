@@ -7,8 +7,8 @@ import 'package:provider/provider.dart';
 void main()   {
   runApp(MyApp());
 
- /* Firestore.instance.collection('Pedidos').document('#0001').setData(
-      {'preco': 199.99, 'usuário' : 'Arthur Mariano'}
+/*  Firestore.instance.collection('Pedidos').document('#0004').setData(
+      {'preco': 93.99, 'usuário' : 'Maria Rita'}
       ); */
 
 /*  Firestore.instance.collection('Pedidos').document('#0002').setData(

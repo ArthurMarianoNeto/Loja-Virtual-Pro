@@ -8,13 +8,16 @@ class LoginScreen extends StatelessWidget {
 
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passController = TextEditingController();
+
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
+  final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      key: scaffoldKey,
       appBar: AppBar(
-        title: const Text('Entrar'),
+        title: const Text('Tela de Login'),
         centerTitle: true,
       ),
       body: Center(
@@ -33,7 +36,7 @@ class LoginScreen extends StatelessWidget {
                   autocorrect: false, // não corrige caso o email seja cabuloso
                   validator: (email){
                     if(!emailValid(email))
-                      return 'E-Mail Inválido';
+                      return 'E-mail Inválido';
                     return null;
                   },
                 ),
@@ -44,7 +47,7 @@ class LoginScreen extends StatelessWidget {
                   autocorrect: false,
                   obscureText: true, // senha não aparece quando digitado
                   validator: (pass){
-                    if(pass.isNotEmpty || pass.length <6)
+                    if(pass.isEmpty || pass.length < 6)
                       return 'Senha inválida';
                     return null;
                   },
@@ -68,10 +71,22 @@ class LoginScreen extends StatelessWidget {
                       onPressed: (){
                         if(formKey.currentState.validate()){
                             context.read<UserManager>().signIn(
-                                User(
+                                user: User(
                                   email: emailController.text,
                                   password: passController.text,
-                                )
+                                ),
+                              onFail: (e){
+                                 scaffoldKey.currentState.showSnackBar(
+                                   SnackBar(
+                                     content: Text("Falha ao entrar: $e"),
+                                     backgroundColor: Colors.red,
+                                   )
+                                 );
+                              },
+                              onSuccess: (){
+                                  //print('Sucesso');
+                                  //TODO: FECHAR TELA DE LOGIN
+                              }
                             );
 
                             }
