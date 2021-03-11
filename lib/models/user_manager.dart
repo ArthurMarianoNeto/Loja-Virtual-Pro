@@ -8,6 +8,7 @@ import 'package:loja_virtual_pro/models/user.dart';
 class UserManager extends ChangeNotifier {
 
   UserManager(){
+    print('Construtor');
     _loadCurrentUser();
   }
 
@@ -20,6 +21,8 @@ class UserManager extends ChangeNotifier {
 
   bool _loading = false;
   bool get loading => _loading;
+
+  bool get isLoggedIn => user != null;
 
   Future<void> signIn({User user, Function onFail, Function onSuccess}) async {
     loading = true;
@@ -36,6 +39,13 @@ class UserManager extends ChangeNotifier {
     }
     loading = false;
   }
+
+  void signOut(){
+    auth.signOut();
+    user = null;
+    notifyListeners();
+  }
+
 
   Future<void> signUp({User user, Function onFail, Function onSuccess}) async {
     loading = true;
