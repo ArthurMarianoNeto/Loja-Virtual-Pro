@@ -19,6 +19,14 @@
 - **Nada de Flutter/Dart/Android Studio instalado na máquina** — tudo roda via
   Docker: `docker compose run --rm flutter <comando>`.
 - Progresso gradual: um "Dia" por vez, cada um com commit `Dia N: ...`.
+- **A partir do Dia 3, cada Dia em sua própria branch** criada a partir de
+  `modernizacao` (ex.: `dia-3-null-safety`); merge em `modernizacao` só após
+  aprovação do usuário.
+- Segredos: nunca versionar keystore (`*.jks`, `*.keystore`), `key.properties`,
+  `.env` (já no `.gitignore`). Fingerprints SHA-1/SHA-256 não são segredo.
+  `android/app/google-services.json` está versionado desde o commit #11 (a
+  `api_key` dele não é segredo; proteção vem das regras do Firestore/Storage e
+  da restrição da chave no Google Cloud Console).
 - Plataformas: **Android primeiro**, iOS depois; web só para um futuro painel admin.
 - Material 3 aceito. Projeto Firebase ainda existe (usuário tem acesso ao console).
 - Host: WSL2, UID/GID 1000 (se diferente, exportar `UID`/`GID` antes do build).
@@ -76,6 +84,8 @@ docker compose run --rm --service-ports web            # http://localhost:8080
 - **Próximo passo:** Dia 3 — migração para null safety em `lib/`.
 - Pendências conhecidas: arquivo solto `antigo bild_gradle_setings.txt` na raiz
   (referência antiga do Gradle; tratar no Dia 8).
+- Sugerido ao usuário: revisar regras do Firestore/Storage (fora do modo teste)
+  e restringir a API key Android no Google Cloud Console (pacote + SHA-1).
 
 ## Histórico
 
@@ -84,3 +94,5 @@ docker compose run --rm --service-ports web            # http://localhost:8080
 - **2026-09-25** — Criado este `CLAUDE.md` de contexto para continuar entre máquinas.
 - **2026-09-28** — Dia 2: dependências atualizadas (Firebase 4.x/6.x/13.x,
   provider 6, flutter_lints 6), `analysis_options.yaml` novo, `.gitignore` do iOS ephemeral.
+- **2026-09-28** — `.gitignore` protege keystores/`key.properties`/`.env`;
+  definida estratégia de uma branch por Dia (a partir do Dia 3).
