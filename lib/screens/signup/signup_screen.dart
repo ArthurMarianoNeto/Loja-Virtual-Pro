@@ -7,6 +7,7 @@ import 'package:provider/provider.dart';
 
 
 class SignUpScreen extends StatelessWidget {
+  SignUpScreen({super.key});
 
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
   final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
@@ -29,7 +30,7 @@ class SignUpScreen extends StatelessWidget {
           child: Form(
             key: formKey,
             child: Consumer<UserManager>(
-              builder: (_, userManager, __){
+              builder: (_, userManager, _){
                 return ListView(
                   padding: const EdgeInsets.all(16),
                   shrinkWrap: true,
@@ -38,10 +39,11 @@ class SignUpScreen extends StatelessWidget {
                       decoration: const InputDecoration(hintText: 'Nome Completo'),
                       enabled: !userManager.loading,
                       validator: (name){
-                        if(name.isEmpty)
+                        if(name == null || name.isEmpty) {
                           return 'Campo obrigatório';
-                        else if(name.trim().split(' ').length <= 1)
+                        } else if(name.trim().split(' ').length <= 1) {
                           return 'Preencha seu Nome completo';
+                        }
                         return null;
                       },
                       onSaved: (name) => user.name = name,
@@ -52,10 +54,11 @@ class SignUpScreen extends StatelessWidget {
                       keyboardType: TextInputType.emailAddress,
                       enabled: !userManager.loading,
                       validator: (email){
-                        if(email.isEmpty)
+                        if(email == null || email.isEmpty) {
                           return 'Campo obrigatório';
-                        else if(!emailValid(email))
+                        } else if(!emailValid(email)) {
                           return 'E-mail inválido';
+                        }
                         return null;
                       },
                       onSaved: (email) => user.email = email,
@@ -66,10 +69,11 @@ class SignUpScreen extends StatelessWidget {
                       obscureText: true,
                       enabled: !userManager.loading,
                       validator: (pass){
-                        if(pass.isEmpty)
+                        if(pass == null || pass.isEmpty) {
                           return 'Campo obrigatório';
-                        else if(pass.length < 6)
+                        } else if(pass.length < 6) {
                           return 'Senha muito curta';
+                        }
                         return null;
                       },
                       onSaved: (pass) => user.password = pass,
@@ -80,10 +84,11 @@ class SignUpScreen extends StatelessWidget {
                       obscureText: true,
                       enabled: !userManager.loading,
                       validator: (pass){
-                        if(pass.isEmpty)
+                        if(pass == null || pass.isEmpty) {
                           return 'Campo obrigatório';
-                        else if(pass.length < 6)
+                        } else if(pass.length < 6) {
                           return 'Senha muito curta';
+                        }
                         return null;
                       },
                       onSaved: (pass) => user.confirmPassword = pass,
@@ -97,11 +102,11 @@ class SignUpScreen extends StatelessWidget {
                             .withAlpha(100),
                         textColor: Colors.white,
                         onPressed: userManager.loading ? null : (){
-                          if(formKey.currentState.validate()){
-                            formKey.currentState.save();
+                          if(formKey.currentState!.validate()){
+                            formKey.currentState!.save();
 
                             if(user.password != user.confirmPassword){
-                              scaffoldKey.currentState.showSnackBar(
+                              scaffoldKey.currentState!.showSnackBar(
                                   SnackBar(
                                     content: const Text('Senhas não coincidem!'),
                                     backgroundColor: Colors.red,
@@ -116,7 +121,7 @@ class SignUpScreen extends StatelessWidget {
                                   Navigator.of(context).pop();
                                 },
                                 onFail: (e){
-                                  scaffoldKey.currentState.showSnackBar(
+                                  scaffoldKey.currentState!.showSnackBar(
                                       SnackBar(
                                         content: Text('Falha ao cadastrar: $e'),
                                         backgroundColor: Colors.red,

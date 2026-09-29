@@ -6,7 +6,12 @@ import 'package:loja_virtual_pro/models/page_manager.dart';
 
 class DrawerTile extends StatelessWidget {
 
-  const DrawerTile({this.iconData, this.title, this.page});
+  const DrawerTile({
+    super.key,
+    required this.iconData,
+    required this.title,
+    required this.page,
+  });
 
   final IconData iconData;
   final String title;

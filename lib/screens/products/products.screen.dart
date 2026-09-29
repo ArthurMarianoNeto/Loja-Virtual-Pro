@@ -6,6 +6,8 @@ import 'package:provider/provider.dart';
 
 
 class ProductsScreen extends StatelessWidget {
+  const ProductsScreen({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -15,7 +17,7 @@ class ProductsScreen extends StatelessWidget {
         centerTitle: true,
       ),
       body: Consumer<ProductManager>(
-        builder: (_, productManager, __){
+        builder: (_, productManager, _){
           return ListView.builder(
               padding: const EdgeInsets.all(4),
               itemCount: productManager.allProducts.length,

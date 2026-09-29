@@ -11,12 +11,12 @@ class User {
 
   }
 
-  String id;
-  String name;
-  String email;
-  String password;
+  String? id;
+  String? name;
+  String? email;
+  String? password;
 
-  String confirmPassword;
+  String? confirmPassword;
 
   DocumentReference get firestoreRef =>
   Firestore.instance.document('users/$id');
