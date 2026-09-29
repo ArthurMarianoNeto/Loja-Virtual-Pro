@@ -3,6 +3,8 @@ import 'package:loja_virtual_pro/common/custom_drawer/custom_drawer_header.dart'
 import 'package:loja_virtual_pro/common/custom_drawer/drawer_tile.dart';
 
 class CustomDrawer extends StatelessWidget {
+  const CustomDrawer({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Drawer(

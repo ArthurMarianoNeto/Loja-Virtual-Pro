@@ -62,8 +62,8 @@ docker compose run --rm --service-ports web            # http://localhost:8080
 |-----|--------|--------|
 | 1 | Ambiente Docker (Flutter 3.47.5 + Android SDK 36) | ✅ concluído |
 | 2 | Dependências / `pubspec.yaml` atualizados | ✅ concluído |
-| 3 | Migração para null safety | ⏳ próximo |
-| 4 | Renomeações da API do Firebase (`FirebaseAuth`, `FirebaseFirestore`, etc.) | — |
+| 3 | Migração para null safety | ✅ concluído (branch `dia-3-null-safety`, aguardando merge) |
+| 4 | Renomeações da API do Firebase (`FirebaseAuth`, `FirebaseFirestore`, etc.) | ⏳ próximo |
 | 5 | Inicialização do Firebase (`flutterfire configure` dentro do Docker) | — |
 | 6 | Widgets / tema (Material 3) | — |
 | 7 | Testes | — |
@@ -72,18 +72,29 @@ docker compose run --rm --service-ports web            # http://localhost:8080
 
 ## Estado atual
 
-- Último passo concluído: **Dia 2** (dependências). `pubspec.yaml` com
-  `sdk: ^3.13.0` (Dart 3.13.4), `firebase_core ^4.15.0`, `cloud_firestore ^6.10.0`,
-  `firebase_auth ^6.7.0`, `firebase_storage ^13.6.0`, `provider ^6.1.5+1`,
-  `flutter_lints ^6.0.0` (substituiu `lint`); `firebase_core_web` removido
-  (vem transitivo). `flutter pub get` OK.
-- `flutter analyze`: **97 issues (68 errors)** — esperado. Principais:
-  null safety (`unchecked_use_of_nullable_value`, `not_initialized_non_nullable_instance_field`,
-  `missing_default_value_for_parameter`) e API antiga do Firebase
-  (`undefined_class`/`undefined_method`, `ambiguous_import` com `User`).
-- **Próximo passo:** Dia 3 — migração para null safety em `lib/`.
-- Pendências conhecidas: arquivo solto `antigo bild_gradle_setings.txt` na raiz
-  (referência antiga do Gradle; tratar no Dia 8).
+- Último passo concluído: **Dia 3** (null safety) na branch `dia-3-null-safety`
+  — **aguardando aprovação do usuário para merge em `modernizacao`**.
+  - Models: campos `late` em `Product`; campos `String?` em `User`;
+    `UserManager.user` é `User?`; `signIn`/`signUp` com `required` e callbacks
+    tipados (`void Function(String)`, `VoidCallback`).
+  - Widgets: `super.key` em todos, `required` no `DrawerTile`, validators de
+    formulário tratando `null`, `currentState!`, `child!` no `Consumer`.
+  - Removidos imports não usados.
+- `flutter analyze`: **31 issues (28 errors)** (antes 97/68). Nenhum erro de
+  null safety restante. Sobram:
+  - Dia 4 (Firebase): `Firestore`, `documentID`, `document.data[...]`,
+    `documents`, `setData`, `AuthResult`, `FirebaseUser`, `auth.currentUser()`,
+    conflito de nome `User` (firebase_auth × models/user.dart).
+  - Dia 6 (widgets): `FlatButton`, `RaisedButton`, `ScaffoldState.showSnackBar`
+    (usar `TextButton`/`ElevatedButton`/`ScaffoldMessenger`).
+- **Próximo passo:** após merge do Dia 3, criar `dia-4-firebase-api` e fazer as
+  renomeações da API do Firebase.
+- Pendências conhecidas:
+  - arquivo solto `antigo bild_gradle_setings.txt` na raiz (tratar no Dia 8);
+  - bug herdado em `UserManager.signUp`: `onSuccess()` é chamado mesmo quando o
+    cadastro falha (fica fora do `try`) — corrigir no Dia 4;
+  - `LoginScreen`/`SignUpScreen`/`BaseScreen` criam controllers/keys em
+    `StatelessWidget` — converter para `StatefulWidget` no Dia 6.
 - Sugerido ao usuário: revisar regras do Firestore/Storage (fora do modo teste)
   e restringir a API key Android no Google Cloud Console (pacote + SHA-1).
 
@@ -96,3 +107,5 @@ docker compose run --rm --service-ports web            # http://localhost:8080
   provider 6, flutter_lints 6), `analysis_options.yaml` novo, `.gitignore` do iOS ephemeral.
 - **2026-09-28** — `.gitignore` protege keystores/`key.properties`/`.env`;
   definida estratégia de uma branch por Dia (a partir do Dia 3).
+- **2026-09-29** — Dia 3: migração de `lib/` para null safety (branch
+  `dia-3-null-safety`); `flutter analyze` de 97/68 para 31/28 issues/erros.

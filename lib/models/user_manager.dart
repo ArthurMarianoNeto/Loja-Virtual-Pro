@@ -17,18 +17,22 @@ class UserManager extends ChangeNotifier {
 
 
 //  FirebaseUser user;
-    User user;
+    User? user;
 
   bool _loading = false;
   bool get loading => _loading;
 
   bool get isLoggedIn => user != null;
 
-  Future<void> signIn({User user, Function onFail, Function onSuccess}) async {
+  Future<void> signIn({
+    required User user,
+    required void Function(String) onFail,
+    required VoidCallback onSuccess,
+  }) async {
     loading = true;
     try {
       final AuthResult result = await auth.signInWithEmailAndPassword(
-          email: user.email, password: user.password);
+          email: user.email!, password: user.password!);
 
       await _loadCurrentUser(firebaseUser: result.user);
  //     this.user = result.user;
@@ -47,11 +51,15 @@ class UserManager extends ChangeNotifier {
   }
 
 
-  Future<void> signUp({User user, Function onFail, Function onSuccess}) async {
+  Future<void> signUp({
+    required User user,
+    required void Function(String) onFail,
+    required VoidCallback onSuccess,
+  }) async {
     loading = true;
     try {
       final AuthResult result = await auth.createUserWithEmailAndPassword(
-          email: user.email, password: user.password);
+          email: user.email!, password: user.password!);
 
 //      this.user = result.user;
       user.id = result.user.uid;
@@ -71,8 +79,8 @@ class UserManager extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> _loadCurrentUser({FirebaseUser firebaseUser}) async {
-    final FirebaseUser currentUser = firebaseUser ?? await auth.currentUser();
+  Future<void> _loadCurrentUser({FirebaseUser? firebaseUser}) async {
+    final FirebaseUser? currentUser = firebaseUser ?? await auth.currentUser();
     if(currentUser != null){
 /*      user = currentUser;
       print(user.uid); */

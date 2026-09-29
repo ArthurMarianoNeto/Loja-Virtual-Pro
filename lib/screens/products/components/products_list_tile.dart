@@ -3,7 +3,7 @@ import 'package:loja_virtual_pro/models/product.dart';
 
 class ProductListTile extends StatelessWidget {
 
-  ProductListTile(this.product);
+  const ProductListTile(this.product, {super.key});
 
   final Product product;
 

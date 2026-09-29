@@ -5,6 +5,7 @@ import 'package:loja_virtual_pro/models/user_manager.dart';
 import 'package:provider/provider.dart';
 
 class LoginScreen extends StatelessWidget {
+  LoginScreen({super.key});
 
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passController = TextEditingController();
@@ -51,8 +52,9 @@ class LoginScreen extends StatelessWidget {
                       keyboardType: TextInputType.emailAddress, // possibilidade de incluir arroba
                       autocorrect: false, // não corrige caso o email seja cabuloso
                       validator: (email){
-                        if(!emailValid(email))
+                        if(email == null || !emailValid(email)) {
                           return 'E-mail Inválido';
+                        }
                         return null;
                       },
                     ),
@@ -64,18 +66,19 @@ class LoginScreen extends StatelessWidget {
                       autocorrect: false,
                       obscureText: true, // senha não aparece quando digitado
                       validator: (pass){
-                        if(pass.isEmpty || pass.length < 6)
+                        if(pass == null || pass.length < 6) {
                           return 'Senha inválida';
+                        }
                         return null;
                       },
                     ),
-                      child,
+                    child!,
                     const SizedBox(height: 16,),
                     SizedBox(
                       height: 44,
                       child: RaisedButton(
                         onPressed: userManager.loading ? null : (){
-                          if(formKey.currentState.validate()){
+                          if(formKey.currentState!.validate()){
                             userManager.signIn(
                             //context.read<UserManager>().signIn(
                                 user: User(
@@ -83,7 +86,7 @@ class LoginScreen extends StatelessWidget {
                                   password: passController.text,
                                 ),
                                 onFail: (e){
-                                  scaffoldKey.currentState.showSnackBar(
+                                  scaffoldKey.currentState!.showSnackBar(
                                       SnackBar(
                                         content: Text("Falha ao entrar: $e"),
                                         backgroundColor: Colors.red,

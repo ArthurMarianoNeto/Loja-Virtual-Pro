@@ -1,4 +1,3 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:loja_virtual_pro/models/product_manager.dart';
 import 'package:loja_virtual_pro/models/user_manager.dart';
@@ -8,7 +7,7 @@ import 'package:loja_virtual_pro/screens/signup/signup_screen.dart';
 import 'package:provider/provider.dart';
 
 void main()   {
-  runApp(MyApp());
+  runApp(const MyApp());
 
 /*  Firestore.instance.collection('Pedidos').document('#0004').setData(
       {'preco': 93.99, 'usuário' : 'Maria Rita'}
@@ -47,6 +46,8 @@ void main()   {
   }
 
 class MyApp extends StatelessWidget {
+  const MyApp({super.key});
+
   @override
   Widget build(BuildContext context) {
     return MultiProvider(
