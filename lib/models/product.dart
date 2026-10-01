@@ -2,12 +2,12 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 
 class Product {
 
-  Product.fromDocument(DocumentSnapshot document){
+  Product.fromDocument(DocumentSnapshot<Map<String, dynamic>> document){
 
-    id = document.documentID;
+    id = document.id;
     name = document['name'] as String;
     description = document['description'] as String;
-    images = List<String>.from(document.data['images'] as List<dynamic>);
+    images = List<String>.from(document['images'] as List<dynamic>);
 
 
   }
