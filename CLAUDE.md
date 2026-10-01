@@ -63,7 +63,7 @@ docker compose run --rm --service-ports web            # http://localhost:8080
 | 1 | Ambiente Docker (Flutter 3.47.5 + Android SDK 36) | ✅ concluído |
 | 2 | Dependências / `pubspec.yaml` atualizados | ✅ concluído |
 | 3 | Migração para null safety | ✅ concluído (merge em `modernizacao`) |
-| 4 | Renomeações da API do Firebase (`FirebaseAuth`, `FirebaseFirestore`, etc.) | ✅ concluído (branch `dia-4-firebase-api`, aguardando merge) |
+| 4 | Renomeações da API do Firebase (`FirebaseAuth`, `FirebaseFirestore`, etc.) | ✅ concluído (merge em `modernizacao`) |
 | 5 | Inicialização do Firebase (`flutterfire configure` dentro do Docker) | ⏳ próximo |
 | 6 | Widgets / tema (Material 3) | — |
 | 7 | Testes | — |
@@ -72,9 +72,8 @@ docker compose run --rm --service-ports web            # http://localhost:8080
 
 ## Estado atual
 
-- Último passo concluído: **Dia 4** (API do Firebase) na branch
-  `dia-4-firebase-api` — **aguardando aprovação do usuário para merge em
-  `modernizacao`**.
+- Último passo concluído: **Dia 4** (API do Firebase) — aprovado e mergeado em
+  `modernizacao` (2026-10-01).
   - Model `User` renomeado para **`AppUser`** (`models/app_user.dart`) para não
     conflitar com `User` do firebase_auth (decisão do usuário).
   - `FirebaseFirestore.instance`, `.doc()`, `.docs`, `.id`, `.data()?[...]`,
@@ -87,7 +86,7 @@ docker compose run --rm --service-ports web            # http://localhost:8080
 - `flutter analyze`: **8 issues (7 errors)** (antes 31/28). Os 7 erros são do
   Dia 6: `FlatButton`, `RaisedButton`, `ScaffoldState.showSnackBar`. Resta 1
   info `avoid_print` em `UserManager`.
-- **Próximo passo:** após merge do Dia 4, criar `dia-5-firebase-init` e fazer
+- **Próximo passo:** Dia 5 na branch `dia-5-firebase-init`:
   `Firebase.initializeApp()` + `flutterfire configure` dentro do Docker.
 - Pendências conhecidas:
   - arquivo solto `antigo bild_gradle_setings.txt` na raiz (tratar no Dia 8);
@@ -112,3 +111,4 @@ docker compose run --rm --service-ports web            # http://localhost:8080
 - **2026-10-01** — Dia 4: API do Firebase atualizada (branch `dia-4-firebase-api`),
   model `User` → `AppUser`, códigos de erro novos, bug do `signUp` corrigido;
   `flutter analyze` de 31/28 para 8/7 issues/erros.
+- **2026-10-01** — Dia 4 aprovado e mergeado em `modernizacao`.
