@@ -62,7 +62,7 @@ docker compose run --rm --service-ports web            # http://localhost:8080
 |-----|--------|--------|
 | 1 | Ambiente Docker (Flutter 3.47.5 + Android SDK 36) | ✅ concluído |
 | 2 | Dependências / `pubspec.yaml` atualizados | ✅ concluído |
-| 3 | Migração para null safety | ✅ concluído (branch `dia-3-null-safety`, aguardando merge) |
+| 3 | Migração para null safety | ✅ concluído (merge em `modernizacao`) |
 | 4 | Renomeações da API do Firebase (`FirebaseAuth`, `FirebaseFirestore`, etc.) | ⏳ próximo |
 | 5 | Inicialização do Firebase (`flutterfire configure` dentro do Docker) | — |
 | 6 | Widgets / tema (Material 3) | — |
@@ -72,8 +72,8 @@ docker compose run --rm --service-ports web            # http://localhost:8080
 
 ## Estado atual
 
-- Último passo concluído: **Dia 3** (null safety) na branch `dia-3-null-safety`
-  — **aguardando aprovação do usuário para merge em `modernizacao`**.
+- Último passo concluído: **Dia 3** (null safety) — aprovado e mergeado em
+  `modernizacao` (2026-10-01).
   - Models: campos `late` em `Product`; campos `String?` em `User`;
     `UserManager.user` é `User?`; `signIn`/`signUp` com `required` e callbacks
     tipados (`void Function(String)`, `VoidCallback`).
@@ -87,8 +87,9 @@ docker compose run --rm --service-ports web            # http://localhost:8080
     conflito de nome `User` (firebase_auth × models/user.dart).
   - Dia 6 (widgets): `FlatButton`, `RaisedButton`, `ScaffoldState.showSnackBar`
     (usar `TextButton`/`ElevatedButton`/`ScaffoldMessenger`).
-- **Próximo passo:** após merge do Dia 3, criar `dia-4-firebase-api` e fazer as
-  renomeações da API do Firebase.
+- **Próximo passo:** Dia 4 na branch `dia-4-firebase-api` — renomeações da API
+  do Firebase (pendente decisão: renomear model `User` → `AppUser` ou import
+  prefixado).
 - Pendências conhecidas:
   - arquivo solto `antigo bild_gradle_setings.txt` na raiz (tratar no Dia 8);
   - bug herdado em `UserManager.signUp`: `onSuccess()` é chamado mesmo quando o
@@ -109,3 +110,4 @@ docker compose run --rm --service-ports web            # http://localhost:8080
   definida estratégia de uma branch por Dia (a partir do Dia 3).
 - **2026-09-29** — Dia 3: migração de `lib/` para null safety (branch
   `dia-3-null-safety`); `flutter analyze` de 97/68 para 31/28 issues/erros.
+- **2026-10-01** — Dia 3 aprovado e mergeado em `modernizacao`.
