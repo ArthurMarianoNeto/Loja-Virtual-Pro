@@ -53,7 +53,7 @@ docker compose run --rm --service-ports web            # http://localhost:8080
 - `main.dart`
 - `common/custom_drawer/` — drawer, header, tiles
 - `helpers/` — `firebase_erros.dart`, `validators.dart`
-- `models/` — `page_manager`, `product`, `product_manager`, `user`, `user_manager`
+- `models/` — `app_user` (antigo `user`), `page_manager`, `product`, `product_manager`, `user_manager`
 - `screens/` — `base`, `login`, `signup`, `products` (+ `components/products_list_tile.dart`)
 
 ## Roteiro da modernização
@@ -62,9 +62,9 @@ docker compose run --rm --service-ports web            # http://localhost:8080
 |-----|--------|--------|
 | 1 | Ambiente Docker (Flutter 3.47.5 + Android SDK 36) | ✅ concluído |
 | 2 | Dependências / `pubspec.yaml` atualizados | ✅ concluído |
-| 3 | Migração para null safety | ✅ concluído (branch `dia-3-null-safety`, aguardando merge) |
-| 4 | Renomeações da API do Firebase (`FirebaseAuth`, `FirebaseFirestore`, etc.) | ⏳ próximo |
-| 5 | Inicialização do Firebase (`flutterfire configure` dentro do Docker) | — |
+| 3 | Migração para null safety | ✅ concluído (merge em `modernizacao`) |
+| 4 | Renomeações da API do Firebase (`FirebaseAuth`, `FirebaseFirestore`, etc.) | ✅ concluído (merge em `modernizacao`) |
+| 5 | Inicialização do Firebase (`flutterfire configure` dentro do Docker) | ⏳ próximo |
 | 6 | Widgets / tema (Material 3) | — |
 | 7 | Testes | — |
 | 8 | Regenerar pasta Android + gerar APK | — |
@@ -72,29 +72,27 @@ docker compose run --rm --service-ports web            # http://localhost:8080
 
 ## Estado atual
 
-- Último passo concluído: **Dia 3** (null safety) na branch `dia-3-null-safety`
-  — **aguardando aprovação do usuário para merge em `modernizacao`**.
-  - Models: campos `late` em `Product`; campos `String?` em `User`;
-    `UserManager.user` é `User?`; `signIn`/`signUp` com `required` e callbacks
-    tipados (`void Function(String)`, `VoidCallback`).
-  - Widgets: `super.key` em todos, `required` no `DrawerTile`, validators de
-    formulário tratando `null`, `currentState!`, `child!` no `Consumer`.
-  - Removidos imports não usados.
-- `flutter analyze`: **31 issues (28 errors)** (antes 97/68). Nenhum erro de
-  null safety restante. Sobram:
-  - Dia 4 (Firebase): `Firestore`, `documentID`, `document.data[...]`,
-    `documents`, `setData`, `AuthResult`, `FirebaseUser`, `auth.currentUser()`,
-    conflito de nome `User` (firebase_auth × models/user.dart).
-  - Dia 6 (widgets): `FlatButton`, `RaisedButton`, `ScaffoldState.showSnackBar`
-    (usar `TextButton`/`ElevatedButton`/`ScaffoldMessenger`).
-- **Próximo passo:** após merge do Dia 3, criar `dia-4-firebase-api` e fazer as
-  renomeações da API do Firebase.
+- Último passo concluído: **Dia 4** (API do Firebase) — aprovado e mergeado em
+  `modernizacao` (2026-10-01).
+  - Model `User` renomeado para **`AppUser`** (`models/app_user.dart`) para não
+    conflitar com `User` do firebase_auth (decisão do usuário).
+  - `FirebaseFirestore.instance`, `.doc()`, `.docs`, `.id`, `.data()?[...]`,
+    `.set()`, `.get()`; snapshots tipados `<Map<String, dynamic>>`.
+  - Auth: `UserCredential`, `User` (firebase_auth), `auth.currentUser`
+    síncrono; captura `FirebaseException` (em vez de `PlatformException`).
+  - `helpers/firebase_erros.dart`: códigos novos (`invalid-email`,
+    `wrong-password`, `invalid-credential`, ...).
+  - Corrigido bug do `signUp`: `onSuccess()` agora só é chamado em caso de sucesso.
+- `flutter analyze`: **8 issues (7 errors)** (antes 31/28). Os 7 erros são do
+  Dia 6: `FlatButton`, `RaisedButton`, `ScaffoldState.showSnackBar`. Resta 1
+  info `avoid_print` em `UserManager`.
+- **Próximo passo:** Dia 5 na branch `dia-5-firebase-init`:
+  `Firebase.initializeApp()` + `flutterfire configure` dentro do Docker.
 - Pendências conhecidas:
   - arquivo solto `antigo bild_gradle_setings.txt` na raiz (tratar no Dia 8);
-  - bug herdado em `UserManager.signUp`: `onSuccess()` é chamado mesmo quando o
-    cadastro falha (fica fora do `try`) — corrigir no Dia 4;
   - `LoginScreen`/`SignUpScreen`/`BaseScreen` criam controllers/keys em
-    `StatelessWidget` — converter para `StatefulWidget` no Dia 6.
+    `StatelessWidget` — converter para `StatefulWidget` no Dia 6;
+  - `print('Construtor')` em `UserManager` (remover no Dia 6/7).
 - Sugerido ao usuário: revisar regras do Firestore/Storage (fora do modo teste)
   e restringir a API key Android no Google Cloud Console (pacote + SHA-1).
 
@@ -109,3 +107,8 @@ docker compose run --rm --service-ports web            # http://localhost:8080
   definida estratégia de uma branch por Dia (a partir do Dia 3).
 - **2026-09-29** — Dia 3: migração de `lib/` para null safety (branch
   `dia-3-null-safety`); `flutter analyze` de 97/68 para 31/28 issues/erros.
+- **2026-10-01** — Dia 3 aprovado e mergeado em `modernizacao`.
+- **2026-10-01** — Dia 4: API do Firebase atualizada (branch `dia-4-firebase-api`),
+  model `User` → `AppUser`, códigos de erro novos, bug do `signUp` corrigido;
+  `flutter analyze` de 31/28 para 8/7 issues/erros.
+- **2026-10-01** — Dia 4 aprovado e mergeado em `modernizacao`.

@@ -1,9 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/services.dart';
 import 'package:loja_virtual_pro/helpers/firebase_erros.dart';
-import 'package:loja_virtual_pro/models/user.dart';
+import 'package:loja_virtual_pro/models/app_user.dart';
 
 class UserManager extends ChangeNotifier {
 
@@ -13,11 +12,11 @@ class UserManager extends ChangeNotifier {
   }
 
   final FirebaseAuth auth = FirebaseAuth.instance;
-  final Firestore firestore = Firestore.instance;
+  final FirebaseFirestore firestore = FirebaseFirestore.instance;
 
 
 //  FirebaseUser user;
-    User? user;
+    AppUser? user;
 
   bool _loading = false;
   bool get loading => _loading;
@@ -25,20 +24,20 @@ class UserManager extends ChangeNotifier {
   bool get isLoggedIn => user != null;
 
   Future<void> signIn({
-    required User user,
+    required AppUser user,
     required void Function(String) onFail,
     required VoidCallback onSuccess,
   }) async {
     loading = true;
     try {
-      final AuthResult result = await auth.signInWithEmailAndPassword(
+      final UserCredential result = await auth.signInWithEmailAndPassword(
           email: user.email!, password: user.password!);
 
       await _loadCurrentUser(firebaseUser: result.user);
  //     this.user = result.user;
 
       onSuccess();
-    } on PlatformException catch (e){
+    } on FirebaseException catch (e){
       onFail(getErrorString(e.code));
     }
     loading = false;
@@ -52,26 +51,26 @@ class UserManager extends ChangeNotifier {
 
 
   Future<void> signUp({
-    required User user,
+    required AppUser user,
     required void Function(String) onFail,
     required VoidCallback onSuccess,
   }) async {
     loading = true;
     try {
-      final AuthResult result = await auth.createUserWithEmailAndPassword(
+      final UserCredential result = await auth.createUserWithEmailAndPassword(
           email: user.email!, password: user.password!);
 
 //      this.user = result.user;
-      user.id = result.user.uid;
+      user.id = result.user!.uid;
       this.user = user;
 
      await  user.saveData();
 
-    } on PlatformException catch (e) {
+      onSuccess();
+    } on FirebaseException catch (e) {
       onFail(getErrorString(e.code));
     }
     loading = false;
-    onSuccess();
   }
 
   set loading(bool value){
@@ -79,13 +78,14 @@ class UserManager extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> _loadCurrentUser({FirebaseUser? firebaseUser}) async {
-    final FirebaseUser? currentUser = firebaseUser ?? await auth.currentUser();
+  Future<void> _loadCurrentUser({User? firebaseUser}) async {
+    final User? currentUser = firebaseUser ?? auth.currentUser;
     if(currentUser != null){
 /*      user = currentUser;
       print(user.uid); */
-       final DocumentSnapshot docUser = await firestore.collection('users').document(currentUser.uid).get();
-      user =  User.fromDoument(docUser);
+       final DocumentSnapshot<Map<String, dynamic>> docUser =
+           await firestore.collection('users').doc(currentUser.uid).get();
+      user =  AppUser.fromDocument(docUser);
  //     print(user.name);
        notifyListeners();
     }

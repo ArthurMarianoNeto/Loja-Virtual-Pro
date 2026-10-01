@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:loja_virtual_pro/helpers/validators.dart';
-import 'package:loja_virtual_pro/models/user.dart';
+import 'package:loja_virtual_pro/models/app_user.dart';
 import 'package:loja_virtual_pro/models/user_manager.dart';
 import 'package:provider/provider.dart';
 
@@ -81,7 +81,7 @@ class LoginScreen extends StatelessWidget {
                           if(formKey.currentState!.validate()){
                             userManager.signIn(
                             //context.read<UserManager>().signIn(
-                                user: User(
+                                user: AppUser(
                                   email: emailController.text,
                                   password: passController.text,
                                 ),
