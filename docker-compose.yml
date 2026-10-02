@@ -11,6 +11,7 @@ x-flutter: &flutter
     - .:/app                                  # código da máquina local
     - pub-cache:/home/dev/.pub-cache          # pacotes Dart persistentes
     - gradle-cache:/home/dev/.gradle          # dependências Android persistentes
+    - firebase-config:/home/dev/.config       # login do Firebase CLI (fora do repositório)
   stdin_open: true
   tty: true
 
@@ -29,3 +30,4 @@ services:
 volumes:
   pub-cache:
   gradle-cache:
+  firebase-config:
