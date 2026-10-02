@@ -69,7 +69,7 @@ docker compose run --rm --service-ports web            # http://localhost:8080
 | 2 | Dependências / `pubspec.yaml` atualizados | ✅ concluído |
 | 3 | Migração para null safety | ✅ concluído (merge em `modernizacao`) |
 | 4 | Renomeações da API do Firebase (`FirebaseAuth`, `FirebaseFirestore`, etc.) | ✅ concluído (merge em `modernizacao`) |
-| 5 | Inicialização do Firebase (`flutterfire configure` dentro do Docker) | 🔍 aguardando aprovação (branch `dia-5-firebase-init`) |
+| 5 | Inicialização do Firebase (`flutterfire configure` dentro do Docker) | ✅ concluído (merge em `modernizacao`) |
 | 6 | Widgets / tema (Material 3) | — |
 | 7 | Testes | — |
 | 8 | Regenerar pasta Android + gerar APK | — |
@@ -77,8 +77,8 @@ docker compose run --rm --service-ports web            # http://localhost:8080
 
 ## Estado atual
 
-- Último passo concluído: **Dia 5** (inicialização do Firebase) na branch
-  `dia-5-firebase-init` — **aguardando aprovação** para merge em `modernizacao`.
+- Último passo concluído: **Dia 5** (inicialização do Firebase) — aprovado e
+  mergeado em `modernizacao` (2026-10-02).
   - Imagem Docker ganhou Node 22, Firebase CLI e FlutterFire CLI; volume
     `firebase-config` guarda o login (fora do repo).
   - `flutterfire configure` (projeto `lojavirtual-pro`) gerou
@@ -91,8 +91,8 @@ docker compose run --rm --service-ports web            # http://localhost:8080
 - `flutter analyze`: **8 issues (7 errors)**, inalterado. Os 7 erros são do
   Dia 6: `FlatButton`, `RaisedButton`, `ScaffoldState.showSnackBar`. Resta 1
   info `avoid_print` em `UserManager`.
-- **Próximo passo:** após aprovação, merge do Dia 5 em `modernizacao`; depois
-  Dia 6 (widgets/tema Material 3) na branch `dia-6-material3`.
+- **Próximo passo:** Dia 6 (widgets/tema Material 3) na branch
+  `dia-6-material3`, combinado para **segunda-feira 2026-10-05**.
 - Pendências conhecidas:
   - arquivo solto `antigo bild_gradle_setings.txt` na raiz (tratar no Dia 8);
   - Dia 8: ao regenerar `android/`, garantir que o `google-services.json`
@@ -124,3 +124,4 @@ docker compose run --rm --service-ports web            # http://localhost:8080
 - **2026-10-02** — Dia 5: Firebase inicializado (branch `dia-5-firebase-init`):
   Node/Firebase CLI/FlutterFire CLI no Docker, `firebase_options.dart`
   (android, ios, web), `Firebase.initializeApp()` no `main()`.
+- **2026-10-02** — Dia 5 aprovado e mergeado em `modernizacao`.
