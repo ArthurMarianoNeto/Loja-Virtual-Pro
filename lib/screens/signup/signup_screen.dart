@@ -4,22 +4,22 @@ import 'package:loja_virtual_pro/models/app_user.dart';
 import 'package:loja_virtual_pro/models/user_manager.dart';
 import 'package:provider/provider.dart';
 
+class SignUpScreen extends StatefulWidget {
+  const SignUpScreen({super.key});
 
+  @override
+  State<SignUpScreen> createState() => _SignUpScreenState();
+}
 
-class SignUpScreen extends StatelessWidget {
-  SignUpScreen({super.key});
-
+class _SignUpScreenState extends State<SignUpScreen> {
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
-  final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
 
   final AppUser user = AppUser();
-
 
   @override
   Widget build(BuildContext context) {
 
     return Scaffold(
-      key: scaffoldKey,
       appBar: AppBar(
         title: const Text('Criar Conta'),
         centerTitle: true,
@@ -96,19 +96,15 @@ class SignUpScreen extends StatelessWidget {
                     const SizedBox(height: 16,),
                     SizedBox(
                       height: 44,
-                      child: RaisedButton(
-                        color: Theme.of(context).primaryColor,
-                        disabledColor: Theme.of(context).primaryColor
-                            .withAlpha(100),
-                        textColor: Colors.white,
+                      child: ElevatedButton(
                         onPressed: userManager.loading ? null : (){
                           if(formKey.currentState!.validate()){
                             formKey.currentState!.save();
 
                             if(user.password != user.confirmPassword){
-                              scaffoldKey.currentState!.showSnackBar(
-                                  SnackBar(
-                                    content: const Text('Senhas não coincidem!'),
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                  const SnackBar(
+                                    content: Text('Senhas não coincidem!'),
                                     backgroundColor: Colors.red,
                                   )
                               );
@@ -118,10 +114,12 @@ class SignUpScreen extends StatelessWidget {
                             userManager.signUp(
                                 user: user,
                                 onSuccess: (){
+                                  if(!mounted) return;
                                   Navigator.of(context).pop();
                                 },
                                 onFail: (e){
-                                  scaffoldKey.currentState!.showSnackBar(
+                                  if(!mounted) return;
+                                  ScaffoldMessenger.of(context).showSnackBar(
                                       SnackBar(
                                         content: Text('Falha ao cadastrar: $e'),
                                         backgroundColor: Colors.red,
@@ -132,7 +130,7 @@ class SignUpScreen extends StatelessWidget {
                           }
                         },
                         child: userManager.loading ?
-                        CircularProgressIndicator(
+                        const CircularProgressIndicator(
                           valueColor: AlwaysStoppedAnimation(Colors.white),
                         )
                             : const Text(

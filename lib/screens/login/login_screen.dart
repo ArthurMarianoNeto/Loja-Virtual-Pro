@@ -4,32 +4,42 @@ import 'package:loja_virtual_pro/models/app_user.dart';
 import 'package:loja_virtual_pro/models/user_manager.dart';
 import 'package:provider/provider.dart';
 
-class LoginScreen extends StatelessWidget {
-  LoginScreen({super.key});
+class LoginScreen extends StatefulWidget {
+  const LoginScreen({super.key});
 
+  @override
+  State<LoginScreen> createState() => _LoginScreenState();
+}
+
+class _LoginScreenState extends State<LoginScreen> {
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passController = TextEditingController();
 
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
-  final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
+
+  @override
+  void dispose() {
+    emailController.dispose();
+    passController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      key: scaffoldKey,
       appBar: AppBar(
         title: const Text('Tela de Login'),
         centerTitle: true,
         actions: [
-          FlatButton(
-              onPressed: (){
-                Navigator.of(context).pushReplacementNamed('/signup');
-          },
-            textColor: Colors.white,
-              child: const Text(
-                'Criar Conta',
-                style: TextStyle(fontSize: 18),
-              ),
+          TextButton(
+            onPressed: (){
+              Navigator.of(context).pushReplacementNamed('/signup');
+            },
+            style: TextButton.styleFrom(foregroundColor: Colors.white),
+            child: const Text(
+              'Criar Conta',
+              style: TextStyle(fontSize: 18),
+            ),
           )
         ],
       ),
@@ -76,17 +86,17 @@ class LoginScreen extends StatelessWidget {
                     const SizedBox(height: 16,),
                     SizedBox(
                       height: 44,
-                      child: RaisedButton(
+                      child: ElevatedButton(
                         onPressed: userManager.loading ? null : (){
                           if(formKey.currentState!.validate()){
                             userManager.signIn(
-                            //context.read<UserManager>().signIn(
                                 user: AppUser(
                                   email: emailController.text,
                                   password: passController.text,
                                 ),
                                 onFail: (e){
-                                  scaffoldKey.currentState!.showSnackBar(
+                                  if(!mounted) return;
+                                  ScaffoldMessenger.of(context).showSnackBar(
                                       SnackBar(
                                         content: Text("Falha ao entrar: $e"),
                                         backgroundColor: Colors.red,
@@ -94,18 +104,15 @@ class LoginScreen extends StatelessWidget {
                                   );
                                 },
                                 onSuccess: (){
-                                  //print('Sucesso');
+                                  if(!mounted) return;
                                   Navigator.of(context).pop();
                                 }
                             );
 
                           }
                         },
-                        color: Theme.of(context).primaryColor,
-                        disabledColor: Theme.of(context).primaryColor.withAlpha(100),
-                        textColor: Colors.white,
                         child: userManager.loading ?
-                            CircularProgressIndicator(
+                            const CircularProgressIndicator(
                               valueColor: AlwaysStoppedAnimation(Colors.white),
                             ) :
                         const Text(
@@ -121,17 +128,16 @@ class LoginScreen extends StatelessWidget {
               },
               child: Align(
                 alignment: Alignment.centerRight,
-                child: FlatButton(
+                child: TextButton(
                   onPressed: (){
 
                   },
-                  padding: EdgeInsets.zero,
+                  style: TextButton.styleFrom(padding: EdgeInsets.zero),
                   child: const Text(
                       'Esqueci minha senha'
                   ),
-
                 ),
-                ),
+              ),
             ),
           ),
         ),

@@ -1,13 +1,12 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:loja_virtual_pro/helpers/firebase_erros.dart';
 import 'package:loja_virtual_pro/models/app_user.dart';
 
 class UserManager extends ChangeNotifier {
 
   UserManager(){
-    print('Construtor');
     _loadCurrentUser();
   }
 

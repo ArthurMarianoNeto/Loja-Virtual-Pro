@@ -70,37 +70,37 @@ docker compose run --rm --service-ports web            # http://localhost:8080
 | 3 | Migração para null safety | ✅ concluído (merge em `modernizacao`) |
 | 4 | Renomeações da API do Firebase (`FirebaseAuth`, `FirebaseFirestore`, etc.) | ✅ concluído (merge em `modernizacao`) |
 | 5 | Inicialização do Firebase (`flutterfire configure` dentro do Docker) | ✅ concluído (merge em `modernizacao`) |
-| 6 | Widgets / tema (Material 3) | — |
+| 6 | Widgets / tema (Material 3) | 🔶 feito na branch `dia-6-material3`, aguardando aprovação |
 | 7 | Testes | — |
 | 8 | Regenerar pasta Android + gerar APK | — |
 | depois | Painel admin web, iOS | — |
 
 ## Estado atual
 
-- Último passo concluído: **Dia 5** (inicialização do Firebase) — aprovado e
-  mergeado em `modernizacao` (2026-10-02).
-  - Imagem Docker ganhou Node 22, Firebase CLI e FlutterFire CLI; volume
-    `firebase-config` guarda o login (fora do repo).
-  - `flutterfire configure` (projeto `lojavirtual-pro`) gerou
-    `lib/firebase_options.dart` e `firebase.json`; registrou no console os
-    apps **iOS** (`br.com.arthurmariano.lojaVirtualPro`) e **web** (Android já existia).
-  - O CLI removeu o `oauth_client` do `google-services.json` → arquivo
-    restaurado à versão original (mesmo app id).
-  - `main()` agora é `async`: `ensureInitialized()` + `Firebase.initializeApp(...)`;
-    removido o código antigo comentado (`Firestore.instance...`).
-- `flutter analyze`: **8 issues (7 errors)**, inalterado. Os 7 erros são do
-  Dia 6: `FlatButton`, `RaisedButton`, `ScaffoldState.showSnackBar`. Resta 1
-  info `avoid_print` em `UserManager`.
-- **Próximo passo:** Dia 6 (widgets/tema Material 3) na branch
-  `dia-6-material3`, combinado para **segunda-feira 2026-10-05**.
+- Último passo concluído: **Dia 6** (widgets/tema Material 3) na branch
+  `dia-6-material3` — **aguardando aprovação** do usuário para merge em
+  `modernizacao` (2026-10-05).
+  - Tema: `useMaterial3: true`, `ColorScheme.fromSeed` com a cor primária
+    `MyApp.primaryColor` (teal `0xFF047D8D`); AppBar teal com texto branco;
+    `elevatedButtonTheme` centraliza cores do botão (inclusive desabilitado).
+  - `FlatButton` → `TextButton`, `RaisedButton` → `ElevatedButton`,
+    `scaffoldKey.currentState.showSnackBar` → `ScaffoldMessenger.of(context)`.
+  - `LoginScreen`, `SignUpScreen` e `BaseScreen` agora são `StatefulWidget`
+    (controllers com `dispose()`; checagem de `mounted` nos callbacks async).
+  - Removido `print('Construtor')` do `UserManager`; imports `cupertino` →
+    `foundation`/`widgets` nos models.
+- `flutter analyze`: **0 issues**.
+- `flutter test`: o único teste (`test/widget_test.dart`) é o "Counter" do
+  template e falha (já falhava antes; não tem relação com o app) → Dia 7.
+- **Próximo passo:** usuário testar/aprovar o Dia 6 → merge em `modernizacao`;
+  depois Dia 7 (testes) na branch `dia-7-testes`.
 - Pendências conhecidas:
   - arquivo solto `antigo bild_gradle_setings.txt` na raiz (tratar no Dia 8);
   - Dia 8: ao regenerar `android/`, garantir que o `google-services.json`
     continue em `android/app/` (o app usa `firebase_options.dart`, então o
     plugin Gradle `google-services` é opcional);
-  - `LoginScreen`/`SignUpScreen`/`BaseScreen` criam controllers/keys em
-    `StatelessWidget` — converter para `StatefulWidget` no Dia 6;
-  - `print('Construtor')` em `UserManager` (remover no Dia 6/7).
+  - Dia 7: substituir `test/widget_test.dart` (template) por testes reais
+    (validators, `getErrorString`, widgets sem Firebase / com mocks).
 - Sugerido ao usuário: revisar regras do Firestore/Storage (fora do modo teste)
   e restringir as API keys (Android: pacote + SHA-1; iOS: bundle id; web:
   domínios) no Google Cloud Console.
@@ -125,3 +125,6 @@ docker compose run --rm --service-ports web            # http://localhost:8080
   Node/Firebase CLI/FlutterFire CLI no Docker, `firebase_options.dart`
   (android, ios, web), `Firebase.initializeApp()` no `main()`.
 - **2026-10-02** — Dia 5 aprovado e mergeado em `modernizacao`.
+- **2026-10-05** — Dia 6: Material 3 (branch `dia-6-material3`): tema
+  `ColorScheme.fromSeed`, botões/SnackBar novos, telas `StatefulWidget`;
+  `flutter analyze` de 8/7 para 0 issues.
