@@ -4,10 +4,21 @@ import 'package:loja_virtual_pro/models/page_manager.dart';
 import 'package:loja_virtual_pro/screens/products/products.screen.dart';
 import 'package:provider/provider.dart';
 
-class BaseScreen extends StatelessWidget {
-  BaseScreen({super.key});
+class BaseScreen extends StatefulWidget {
+  const BaseScreen({super.key});
 
+  @override
+  State<BaseScreen> createState() => _BaseScreenState();
+}
+
+class _BaseScreenState extends State<BaseScreen> {
   final PageController pageController = PageController();
+
+  @override
+  void dispose() {
+    pageController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -17,29 +28,25 @@ class BaseScreen extends StatelessWidget {
         controller: pageController,
         physics: const NeverScrollableScrollPhysics(),
         children: [
- //         LoginScreen(),
           Scaffold(
-            drawer: CustomDrawer(),
+            drawer: const CustomDrawer(),
             appBar: AppBar(
               title: const Text('Home'),
             ),
           ),
-          ProductsScreen(),
+          const ProductsScreen(),
           Scaffold(
-            drawer: CustomDrawer(),
+            drawer: const CustomDrawer(),
             appBar: AppBar(
               title: const Text('Meus Pedidos'),
             ),
           ),
           Scaffold(
-            drawer: CustomDrawer(),
+            drawer: const CustomDrawer(),
             appBar: AppBar(
               title: const Text('Lojas'),
             ),
           ),
-//          Container(color: Colors.red,),
-//          Container(color: Colors.yellow,),
-//          Container(color: Colors.green,),
         ],
       ),
     );

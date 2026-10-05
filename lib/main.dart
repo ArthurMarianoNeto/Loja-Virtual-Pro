@@ -19,6 +19,8 @@ Future<void> main() async {
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
+  static const Color primaryColor = Color.fromARGB(255, 4, 125, 141);
+
   @override
   Widget build(BuildContext context) {
     return MultiProvider(
@@ -36,12 +38,26 @@ class MyApp extends StatelessWidget {
           title: 'Loja MegaModa',
           debugShowCheckedModeBanner: false,
           theme: ThemeData(
-            primaryColor: const Color.fromARGB(255, 4, 125, 141),
-            scaffoldBackgroundColor: const Color.fromARGB(255, 4, 125, 141),
-            appBarTheme: const AppBarTheme(
-                elevation: 0
+            useMaterial3: true,
+            colorScheme: ColorScheme.fromSeed(
+              seedColor: primaryColor,
+              primary: primaryColor,
             ),
-            //primarySwatch: Colors.blue,
+            primaryColor: primaryColor,
+            scaffoldBackgroundColor: primaryColor,
+            appBarTheme: const AppBarTheme(
+              elevation: 0,
+              backgroundColor: primaryColor,
+              foregroundColor: Colors.white,
+            ),
+            elevatedButtonTheme: ElevatedButtonThemeData(
+              style: ElevatedButton.styleFrom(
+                backgroundColor: primaryColor,
+                foregroundColor: Colors.white,
+                disabledBackgroundColor: primaryColor.withAlpha(100),
+                disabledForegroundColor: Colors.white,
+              ),
+            ),
             visualDensity: VisualDensity.adaptivePlatformDensity,
           ),
           //home: BaseScreen(),
@@ -50,16 +66,16 @@ class MyApp extends StatelessWidget {
             switch (settings.name) {
               case '/login':
                 return MaterialPageRoute(
-                    builder: (_) => LoginScreen()
+                    builder: (_) => const LoginScreen()
                 );
               case '/signup':
                 return MaterialPageRoute(
-                    builder: (_) => SignUpScreen()
+                    builder: (_) => const SignUpScreen()
                 );
               case '/base':
               default:
                 return MaterialPageRoute(
-                    builder: (_) => BaseScreen()
+                    builder: (_) => const BaseScreen()
                 );
             }
           },
