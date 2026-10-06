@@ -70,16 +70,16 @@ docker compose run --rm --service-ports web            # http://localhost:8080
 | 3 | Migração para null safety | ✅ concluído (merge em `modernizacao`) |
 | 4 | Renomeações da API do Firebase (`FirebaseAuth`, `FirebaseFirestore`, etc.) | ✅ concluído (merge em `modernizacao`) |
 | 5 | Inicialização do Firebase (`flutterfire configure` dentro do Docker) | ✅ concluído (merge em `modernizacao`) |
-| 6 | Widgets / tema (Material 3) | 🔶 feito na branch `dia-6-material3`, aguardando aprovação |
+| 6 | Widgets / tema (Material 3) | ✅ concluído (merge em `modernizacao`) |
 | 7 | Testes | — |
 | 8 | Regenerar pasta Android + gerar APK | — |
 | depois | Painel admin web, iOS | — |
 
 ## Estado atual
 
-- Último passo concluído: **Dia 6** (widgets/tema Material 3) na branch
-  `dia-6-material3` — **aguardando aprovação** do usuário para merge em
-  `modernizacao` (2026-10-05).
+- Último passo concluído: **Dia 6** (widgets/tema Material 3) — aprovado e
+  mergeado em `modernizacao` (2026-10-06); no GitHub, o usuário também fez o
+  merge em `master` pelo PR #6.
   - Tema: `useMaterial3: true`, `ColorScheme.fromSeed` com a cor primária
     `MyApp.primaryColor` (teal `0xFF047D8D`); AppBar teal com texto branco;
     `elevatedButtonTheme` centraliza cores do botão (inclusive desabilitado).
@@ -92,8 +92,7 @@ docker compose run --rm --service-ports web            # http://localhost:8080
 - `flutter analyze`: **0 issues**.
 - `flutter test`: o único teste (`test/widget_test.dart`) é o "Counter" do
   template e falha (já falhava antes; não tem relação com o app) → Dia 7.
-- **Próximo passo:** usuário testar/aprovar o Dia 6 → merge em `modernizacao`;
-  depois Dia 7 (testes) na branch `dia-7-testes`.
+- **Próximo passo:** Dia 7 (testes) na branch `dia-7-testes`.
 - Pendências conhecidas:
   - arquivo solto `antigo bild_gradle_setings.txt` na raiz (tratar no Dia 8);
   - Dia 8: ao regenerar `android/`, garantir que o `google-services.json`
@@ -128,3 +127,4 @@ docker compose run --rm --service-ports web            # http://localhost:8080
 - **2026-10-05** — Dia 6: Material 3 (branch `dia-6-material3`): tema
   `ColorScheme.fromSeed`, botões/SnackBar novos, telas `StatefulWidget`;
   `flutter analyze` de 8/7 para 0 issues.
+- **2026-10-06** — Dia 6 aprovado (PR #6 em `master`) e mergeado em `modernizacao`.
