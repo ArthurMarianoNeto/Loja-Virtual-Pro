@@ -18,12 +18,13 @@ class AppUser {
 
   String? confirmPassword;
 
-  DocumentReference<Map<String, dynamic>> get firestoreRef =>
-  FirebaseFirestore.instance.doc('users/$id');
+  DocumentReference<Map<String, dynamic>> firestoreRef(
+          FirebaseFirestore firestore) =>
+      firestore.doc('users/$id');
 
-  Future<void> saveData() async{
+  Future<void> saveData(FirebaseFirestore firestore) async{
 
-    await firestoreRef.set(toMap());
+    await firestoreRef(firestore).set(toMap());
 
   }
 

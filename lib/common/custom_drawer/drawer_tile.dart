@@ -40,13 +40,16 @@ class DrawerTile extends StatelessWidget {
               ),
             ),
             const SizedBox(width: 32,),
-            Text(
-              title,
-              style: TextStyle(
-              fontSize: 16,
-                color: curPage == page ? primaryColor : Colors.grey[700],
-            ),
-           )
+            Expanded(
+              child: Text(
+                title,
+                overflow: TextOverflow.ellipsis,
+                style: TextStyle(
+                  fontSize: 16,
+                  color: curPage == page ? primaryColor : Colors.grey[700],
+                ),
+              ),
+            )
           ],
         ),
       ),

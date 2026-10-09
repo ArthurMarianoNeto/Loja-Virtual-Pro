@@ -1,0 +1,18 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Catálogo: qualquer pessoa pode ver os produtos, mesmo sem login.
+    // Escrita só pelo console do Firebase (até existir o painel admin).
+    match /products/{productId} {
+      allow read: if true;
+      allow write: if false;
+    }
+
+    // Cada usuário só lê e grava o próprio documento (users/{uid}).
+    match /users/{userId} {
+      allow read, write: if request.auth != null && request.auth.uid == userId;
+    }
+  }
+}

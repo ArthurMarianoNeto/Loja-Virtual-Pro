@@ -6,12 +6,14 @@ import 'package:loja_virtual_pro/models/app_user.dart';
 
 class UserManager extends ChangeNotifier {
 
-  UserManager(){
+  UserManager({FirebaseAuth? auth, FirebaseFirestore? firestore})
+      : auth = auth ?? FirebaseAuth.instance,
+        firestore = firestore ?? FirebaseFirestore.instance {
     _loadCurrentUser();
   }
 
-  final FirebaseAuth auth = FirebaseAuth.instance;
-  final FirebaseFirestore firestore = FirebaseFirestore.instance;
+  final FirebaseAuth auth;
+  final FirebaseFirestore firestore;
 
 
 //  FirebaseUser user;
@@ -63,7 +65,7 @@ class UserManager extends ChangeNotifier {
       user.id = result.user!.uid;
       this.user = user;
 
-     await  user.saveData();
+     await user.saveData(firestore);
 
       onSuccess();
     } on FirebaseException catch (e) {

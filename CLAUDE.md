@@ -71,35 +71,56 @@ docker compose run --rm --service-ports web            # http://localhost:8080
 | 4 | Renomeações da API do Firebase (`FirebaseAuth`, `FirebaseFirestore`, etc.) | ✅ concluído (merge em `modernizacao`) |
 | 5 | Inicialização do Firebase (`flutterfire configure` dentro do Docker) | ✅ concluído (merge em `modernizacao`) |
 | 6 | Widgets / tema (Material 3) | ✅ concluído (merge em `modernizacao`) |
-| 7 | Testes | — |
+| 7 | Testes | 🔄 aguardando aprovação (branch `dia-7-testes`) |
 | 8 | Regenerar pasta Android + gerar APK | — |
 | depois | Painel admin web, iOS | — |
 
 ## Estado atual
 
-- Último passo concluído: **Dia 6** (widgets/tema Material 3) — aprovado e
-  mergeado em `modernizacao` (2026-10-06); no GitHub, o usuário também fez o
-  merge em `master` pelo PR #6.
-  - Tema: `useMaterial3: true`, `ColorScheme.fromSeed` com a cor primária
-    `MyApp.primaryColor` (teal `0xFF047D8D`); AppBar teal com texto branco;
-    `elevatedButtonTheme` centraliza cores do botão (inclusive desabilitado).
-  - `FlatButton` → `TextButton`, `RaisedButton` → `ElevatedButton`,
-    `scaffoldKey.currentState.showSnackBar` → `ScaffoldMessenger.of(context)`.
-  - `LoginScreen`, `SignUpScreen` e `BaseScreen` agora são `StatefulWidget`
-    (controllers com `dispose()`; checagem de `mounted` nos callbacks async).
-  - Removido `print('Construtor')` do `UserManager`; imports `cupertino` →
-    `foundation`/`widgets` nos models.
-- `flutter analyze`: **0 issues**.
-- `flutter test`: o único teste (`test/widget_test.dart`) é o "Counter" do
-  template e falha (já falhava antes; não tem relação com o app) → Dia 7.
-- **Próximo passo:** Dia 7 (testes) na branch `dia-7-testes`.
+- Último passo concluído: **Dia 7** (testes) na branch `dia-7-testes` —
+  **aguardando aprovação** do usuário para merge em `modernizacao`.
+  - `test/widget_test.dart` (template "Counter") removido; **39 testes** novos:
+    - `test/helpers/`: `validators_test`, `firebase_erros_test`;
+    - `test/models/`: `app_user_test`, `page_manager_test`,
+      `product_manager_test`, `user_manager_test`;
+    - `test/screens/`: `login_screen_test`, `signup_screen_test`,
+      `base_screen_test` (drawer, header logado/deslogado, navegação).
+  - `dev_dependencies`: `fake_cloud_firestore`, `firebase_auth_mocks`,
+    `mock_exceptions` (este para simular `FirebaseAuthException` com
+    `whenCalling(...).on(auth).thenThrow(...)`).
+  - Injeção de dependência para testes: `UserManager({auth, firestore})` e
+    `ProductManager({firestore})` (padrão = `.instance`);
+    `AppUser.saveData(firestore)` / `firestoreRef(firestore)`.
+  - Correção de layout achada pelos testes: `CustomDrawerHeader` usa
+    `minHeight: 180` (antes altura fixa → overflow com fonte grande) e o título
+    do `DrawerTile` tem `Expanded` + reticências.
+  - Teste contra o Firebase real (web, `localhost:8080`): a lista de produtos
+    vinha vazia porque (1) as regras do Firestore (modo teste de 2020)
+    negavam tudo e (2) o único produto (`products/wB5C6ZrHMLZDjIHxdHgH`,
+    "Camiseta Branca") tem os campos `"description "` e `"images "` **com
+    espaço no final** (erro de digitação no console).
+  - Regras versionadas em `firestore.rules` (+ seção `firestore` no
+    `firebase.json`) e **publicadas** com `firebase deploy --only
+    firestore:rules` (2026-10-09): `products` leitura pública / escrita só
+    pelo console; `users/{uid}` só o próprio usuário.
+  - App mais robusto: `Product.fromDocument` tolera campos ausentes;
+    `ProductManager` registra `FirebaseException` com `debugPrint`;
+    `ProductListTile` mostra ícone sem imagem/erro de carga e usa
+    `WebHtmlElementStrategy.fallback` (imagens sem CORS na web).
+- `flutter analyze`: **0 issues**. `flutter test`: **42/42 passando**.
+- **Próximo passo:** após aprovação do Dia 7, Dia 8 (regenerar `android/` +
+  gerar APK) na branch `dia-8-android-apk`.
 - Pendências conhecidas:
   - arquivo solto `antigo bild_gradle_setings.txt` na raiz (tratar no Dia 8);
   - Dia 8: ao regenerar `android/`, garantir que o `google-services.json`
     continue em `android/app/` (o app usa `firebase_options.dart`, então o
     plugin Gradle `google-services` é opcional);
-  - Dia 7: substituir `test/widget_test.dart` (template) por testes reais
-    (validators, `getErrorString`, widgets sem Firebase / com mocks).
+  - **Dados do Firestore (usuário, pelo console):** renomear os campos
+    `"description "` → `description` e `"images "` → `images` do produto;
+    a 2ª URL de imagem (somarmalhas.com.br) dá 404.
+  - `web/` gerada localmente (não versionada) só para testar no navegador;
+    `flutter run` acrescentou `web/**` ao `analysis_options.yaml` (também
+    não commitado) — decidir se versiona (painel admin web no roteiro).
 - Sugerido ao usuário: revisar regras do Firestore/Storage (fora do modo teste)
   e restringir as API keys (Android: pacote + SHA-1; iOS: bundle id; web:
   domínios) no Google Cloud Console.
@@ -128,3 +149,9 @@ docker compose run --rm --service-ports web            # http://localhost:8080
   `ColorScheme.fromSeed`, botões/SnackBar novos, telas `StatefulWidget`;
   `flutter analyze` de 8/7 para 0 issues.
 - **2026-10-06** — Dia 6 aprovado (PR #6 em `master`) e mergeado em `modernizacao`.
+- **2026-10-09** — Dia 7: testes (branch `dia-7-testes`): 39 testes
+  (helpers, models com mocks do Firebase, telas de login/cadastro/base),
+  injeção de dependência nos managers, correção de overflow no drawer.
+- **2026-10-09** — Teste com Firebase real: regras do Firestore novas
+  (`firestore.rules`, publicadas); produtos tolerantes a campos ausentes e
+  imagens sem CORS/quebradas; 42 testes.

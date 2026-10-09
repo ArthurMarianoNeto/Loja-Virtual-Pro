@@ -20,7 +20,15 @@ class ProductListTile extends StatelessWidget {
           children: <Widget>[
             AspectRatio(
               aspectRatio: 1,
-              child: Image.network(product.images.first),
+              child: product.images.isEmpty
+                  ? const Icon(Icons.image_not_supported, color: Colors.grey)
+                  : Image.network(
+                      product.images.first,
+                      // Na web, usa <img> quando o servidor da imagem não libera CORS.
+                      webHtmlElementStrategy: WebHtmlElementStrategy.fallback,
+                      errorBuilder: (_, _, _) =>
+                          const Icon(Icons.broken_image, color: Colors.grey),
+                    ),
             ),
             const SizedBox(width: 16,),
             Expanded(
