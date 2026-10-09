@@ -71,35 +71,39 @@ docker compose run --rm --service-ports web            # http://localhost:8080
 | 4 | Renomeações da API do Firebase (`FirebaseAuth`, `FirebaseFirestore`, etc.) | ✅ concluído (merge em `modernizacao`) |
 | 5 | Inicialização do Firebase (`flutterfire configure` dentro do Docker) | ✅ concluído (merge em `modernizacao`) |
 | 6 | Widgets / tema (Material 3) | ✅ concluído (merge em `modernizacao`) |
-| 7 | Testes | — |
+| 7 | Testes | 🔄 aguardando aprovação (branch `dia-7-testes`) |
 | 8 | Regenerar pasta Android + gerar APK | — |
 | depois | Painel admin web, iOS | — |
 
 ## Estado atual
 
-- Último passo concluído: **Dia 6** (widgets/tema Material 3) — aprovado e
-  mergeado em `modernizacao` (2026-10-06); no GitHub, o usuário também fez o
-  merge em `master` pelo PR #6.
-  - Tema: `useMaterial3: true`, `ColorScheme.fromSeed` com a cor primária
-    `MyApp.primaryColor` (teal `0xFF047D8D`); AppBar teal com texto branco;
-    `elevatedButtonTheme` centraliza cores do botão (inclusive desabilitado).
-  - `FlatButton` → `TextButton`, `RaisedButton` → `ElevatedButton`,
-    `scaffoldKey.currentState.showSnackBar` → `ScaffoldMessenger.of(context)`.
-  - `LoginScreen`, `SignUpScreen` e `BaseScreen` agora são `StatefulWidget`
-    (controllers com `dispose()`; checagem de `mounted` nos callbacks async).
-  - Removido `print('Construtor')` do `UserManager`; imports `cupertino` →
-    `foundation`/`widgets` nos models.
-- `flutter analyze`: **0 issues**.
-- `flutter test`: o único teste (`test/widget_test.dart`) é o "Counter" do
-  template e falha (já falhava antes; não tem relação com o app) → Dia 7.
-- **Próximo passo:** Dia 7 (testes) na branch `dia-7-testes`.
+- Último passo concluído: **Dia 7** (testes) na branch `dia-7-testes` —
+  **aguardando aprovação** do usuário para merge em `modernizacao`.
+  - `test/widget_test.dart` (template "Counter") removido; **39 testes** novos:
+    - `test/helpers/`: `validators_test`, `firebase_erros_test`;
+    - `test/models/`: `app_user_test`, `page_manager_test`,
+      `product_manager_test`, `user_manager_test`;
+    - `test/screens/`: `login_screen_test`, `signup_screen_test`,
+      `base_screen_test` (drawer, header logado/deslogado, navegação).
+  - `dev_dependencies`: `fake_cloud_firestore`, `firebase_auth_mocks`,
+    `mock_exceptions` (este para simular `FirebaseAuthException` com
+    `whenCalling(...).on(auth).thenThrow(...)`).
+  - Injeção de dependência para testes: `UserManager({auth, firestore})` e
+    `ProductManager({firestore})` (padrão = `.instance`);
+    `AppUser.saveData(firestore)` / `firestoreRef(firestore)`.
+  - Correção de layout achada pelos testes: `CustomDrawerHeader` usa
+    `minHeight: 180` (antes altura fixa → overflow com fonte grande) e o título
+    do `DrawerTile` tem `Expanded` + reticências.
+- `flutter analyze`: **0 issues**. `flutter test`: **39/39 passando**.
+- **Próximo passo:** após aprovação do Dia 7, Dia 8 (regenerar `android/` +
+  gerar APK) na branch `dia-8-android-apk`.
 - Pendências conhecidas:
   - arquivo solto `antigo bild_gradle_setings.txt` na raiz (tratar no Dia 8);
   - Dia 8: ao regenerar `android/`, garantir que o `google-services.json`
     continue em `android/app/` (o app usa `firebase_options.dart`, então o
     plugin Gradle `google-services` é opcional);
-  - Dia 7: substituir `test/widget_test.dart` (template) por testes reais
-    (validators, `getErrorString`, widgets sem Firebase / com mocks).
+  - `ProductListTile` usa `Image.network` → não coberto por teste de widget
+    (precisaria de mock de imagens de rede).
 - Sugerido ao usuário: revisar regras do Firestore/Storage (fora do modo teste)
   e restringir as API keys (Android: pacote + SHA-1; iOS: bundle id; web:
   domínios) no Google Cloud Console.
@@ -128,3 +132,6 @@ docker compose run --rm --service-ports web            # http://localhost:8080
   `ColorScheme.fromSeed`, botões/SnackBar novos, telas `StatefulWidget`;
   `flutter analyze` de 8/7 para 0 issues.
 - **2026-10-06** — Dia 6 aprovado (PR #6 em `master`) e mergeado em `modernizacao`.
+- **2026-10-09** — Dia 7: testes (branch `dia-7-testes`): 39 testes
+  (helpers, models com mocks do Firebase, telas de login/cadastro/base),
+  injeção de dependência nos managers, correção de overflow no drawer.

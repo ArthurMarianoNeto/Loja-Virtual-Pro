@@ -4,12 +4,12 @@ import 'package:loja_virtual_pro/models/product.dart';
 
 class ProductManager extends ChangeNotifier{
 
-  ProductManager(){
+  ProductManager({FirebaseFirestore? firestore})
+      : firestore = firestore ?? FirebaseFirestore.instance {
     _loadAllProducts();
-
   }
 
-  final FirebaseFirestore firestore = FirebaseFirestore.instance;
+  final FirebaseFirestore firestore;
 
   List<Product> allProducts = [];
 
