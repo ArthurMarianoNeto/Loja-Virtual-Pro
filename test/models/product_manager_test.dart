@@ -32,6 +32,31 @@ void main() {
     expect(calca.images, hasLength(2));
   });
 
+  test('campos ausentes ou mal digitados não derrubam a lista', () async {
+    final FakeFirebaseFirestore firestore = FakeFirebaseFirestore();
+    // Caso real do console: nomes de campo com espaço no final.
+    await firestore.collection('products').doc('p1').set({
+      'name': 'Camiseta Branca',
+      'description ': 'Camiseta de alta qualidade',
+      'images ': ['https://exemplo.com/camiseta.png'],
+    });
+    await firestore.collection('products').doc('p2').set({
+      'name': 'Calça',
+      'description': 'Calça jeans',
+      'images': ['https://exemplo.com/calca.png'],
+    });
+
+    final ProductManager productManager = ProductManager(firestore: firestore);
+    await pumpEventQueue();
+
+    expect(productManager.allProducts, hasLength(2));
+    final camiseta =
+        productManager.allProducts.firstWhere((p) => p.id == 'p1');
+    expect(camiseta.name, 'Camiseta Branca');
+    expect(camiseta.description, '');
+    expect(camiseta.images, isEmpty);
+  });
+
   test('coleção vazia resulta em lista vazia', () async {
     final ProductManager productManager =
         ProductManager(firestore: FakeFirebaseFirestore());

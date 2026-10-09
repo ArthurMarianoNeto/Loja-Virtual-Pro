@@ -4,10 +4,13 @@ class Product {
 
   Product.fromDocument(DocumentSnapshot<Map<String, dynamic>> document){
 
+    // Campos ausentes (ou com nome digitado errado no console) não derrubam
+    // o carregamento da lista inteira.
+    final Map<String, dynamic> data = document.data() ?? {};
     id = document.id;
-    name = document['name'] as String;
-    description = document['description'] as String;
-    images = List<String>.from(document['images'] as List<dynamic>);
+    name = data['name'] as String? ?? '';
+    description = data['description'] as String? ?? '';
+    images = List<String>.from(data['images'] as List<dynamic>? ?? const []);
 
 
   }

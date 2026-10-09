@@ -94,7 +94,20 @@ docker compose run --rm --service-ports web            # http://localhost:8080
   - Correção de layout achada pelos testes: `CustomDrawerHeader` usa
     `minHeight: 180` (antes altura fixa → overflow com fonte grande) e o título
     do `DrawerTile` tem `Expanded` + reticências.
-- `flutter analyze`: **0 issues**. `flutter test`: **39/39 passando**.
+  - Teste contra o Firebase real (web, `localhost:8080`): a lista de produtos
+    vinha vazia porque (1) as regras do Firestore (modo teste de 2020)
+    negavam tudo e (2) o único produto (`products/wB5C6ZrHMLZDjIHxdHgH`,
+    "Camiseta Branca") tem os campos `"description "` e `"images "` **com
+    espaço no final** (erro de digitação no console).
+  - Regras versionadas em `firestore.rules` (+ seção `firestore` no
+    `firebase.json`) e **publicadas** com `firebase deploy --only
+    firestore:rules` (2026-10-09): `products` leitura pública / escrita só
+    pelo console; `users/{uid}` só o próprio usuário.
+  - App mais robusto: `Product.fromDocument` tolera campos ausentes;
+    `ProductManager` registra `FirebaseException` com `debugPrint`;
+    `ProductListTile` mostra ícone sem imagem/erro de carga e usa
+    `WebHtmlElementStrategy.fallback` (imagens sem CORS na web).
+- `flutter analyze`: **0 issues**. `flutter test`: **42/42 passando**.
 - **Próximo passo:** após aprovação do Dia 7, Dia 8 (regenerar `android/` +
   gerar APK) na branch `dia-8-android-apk`.
 - Pendências conhecidas:
@@ -102,8 +115,12 @@ docker compose run --rm --service-ports web            # http://localhost:8080
   - Dia 8: ao regenerar `android/`, garantir que o `google-services.json`
     continue em `android/app/` (o app usa `firebase_options.dart`, então o
     plugin Gradle `google-services` é opcional);
-  - `ProductListTile` usa `Image.network` → não coberto por teste de widget
-    (precisaria de mock de imagens de rede).
+  - **Dados do Firestore (usuário, pelo console):** renomear os campos
+    `"description "` → `description` e `"images "` → `images` do produto;
+    a 2ª URL de imagem (somarmalhas.com.br) dá 404.
+  - `web/` gerada localmente (não versionada) só para testar no navegador;
+    `flutter run` acrescentou `web/**` ao `analysis_options.yaml` (também
+    não commitado) — decidir se versiona (painel admin web no roteiro).
 - Sugerido ao usuário: revisar regras do Firestore/Storage (fora do modo teste)
   e restringir as API keys (Android: pacote + SHA-1; iOS: bundle id; web:
   domínios) no Google Cloud Console.
@@ -135,3 +152,6 @@ docker compose run --rm --service-ports web            # http://localhost:8080
 - **2026-10-09** — Dia 7: testes (branch `dia-7-testes`): 39 testes
   (helpers, models com mocks do Firebase, telas de login/cadastro/base),
   injeção de dependência nos managers, correção de overflow no drawer.
+- **2026-10-09** — Teste com Firebase real: regras do Firestore novas
+  (`firestore.rules`, publicadas); produtos tolerantes a campos ausentes e
+  imagens sem CORS/quebradas; 42 testes.
