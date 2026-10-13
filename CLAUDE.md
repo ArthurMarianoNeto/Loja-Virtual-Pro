@@ -71,14 +71,14 @@ docker compose run --rm --service-ports web            # http://localhost:8080
 | 4 | Renomeações da API do Firebase (`FirebaseAuth`, `FirebaseFirestore`, etc.) | ✅ concluído (merge em `modernizacao`) |
 | 5 | Inicialização do Firebase (`flutterfire configure` dentro do Docker) | ✅ concluído (merge em `modernizacao`) |
 | 6 | Widgets / tema (Material 3) | ✅ concluído (merge em `modernizacao`) |
-| 7 | Testes | 🔄 aguardando aprovação (branch `dia-7-testes`) |
+| 7 | Testes | ✅ concluído (merge em `modernizacao`) |
 | 8 | Regenerar pasta Android + gerar APK | — |
 | depois | Painel admin web, iOS | — |
 
 ## Estado atual
 
-- Último passo concluído: **Dia 7** (testes) na branch `dia-7-testes` —
-  **aguardando aprovação** do usuário para merge em `modernizacao`.
+- Último passo concluído: **Dia 7** (testes) — aprovado e mergeado em
+  `modernizacao` (2026-10-13).
   - `test/widget_test.dart` (template "Counter") removido; **39 testes** novos:
     - `test/helpers/`: `validators_test`, `firebase_erros_test`;
     - `test/models/`: `app_user_test`, `page_manager_test`,
@@ -108,8 +108,8 @@ docker compose run --rm --service-ports web            # http://localhost:8080
     `ProductListTile` mostra ícone sem imagem/erro de carga e usa
     `WebHtmlElementStrategy.fallback` (imagens sem CORS na web).
 - `flutter analyze`: **0 issues**. `flutter test`: **42/42 passando**.
-- **Próximo passo:** após aprovação do Dia 7, Dia 8 (regenerar `android/` +
-  gerar APK) na branch `dia-8-android-apk`.
+- **Próximo passo:** Dia 8 (regenerar `android/` + gerar APK) na branch
+  `dia-8-android-apk`.
 - Pendências conhecidas:
   - arquivo solto `antigo bild_gradle_setings.txt` na raiz (tratar no Dia 8);
   - Dia 8: ao regenerar `android/`, garantir que o `google-services.json`
@@ -155,3 +155,4 @@ docker compose run --rm --service-ports web            # http://localhost:8080
 - **2026-10-09** — Teste com Firebase real: regras do Firestore novas
   (`firestore.rules`, publicadas); produtos tolerantes a campos ausentes e
   imagens sem CORS/quebradas; 42 testes.
+- **2026-10-13** — Dia 7 aprovado e mergeado em `modernizacao`.
