@@ -72,49 +72,37 @@ docker compose run --rm --service-ports web            # http://localhost:8080
 | 5 | Inicialização do Firebase (`flutterfire configure` dentro do Docker) | ✅ concluído (merge em `modernizacao`) |
 | 6 | Widgets / tema (Material 3) | ✅ concluído (merge em `modernizacao`) |
 | 7 | Testes | ✅ concluído (merge em `modernizacao`) |
-| 8 | Regenerar pasta Android + gerar APK | — |
+| 8 | Regenerar pasta Android + gerar APK | 🔄 aguardando aprovação (branch `dia-8-android-apk`) |
 | depois | Painel admin web, iOS | — |
 
 ## Estado atual
 
-- Último passo concluído: **Dia 7** (testes) — aprovado e mergeado em
-  `modernizacao` (2026-10-13).
-  - `test/widget_test.dart` (template "Counter") removido; **39 testes** novos:
-    - `test/helpers/`: `validators_test`, `firebase_erros_test`;
-    - `test/models/`: `app_user_test`, `page_manager_test`,
-      `product_manager_test`, `user_manager_test`;
-    - `test/screens/`: `login_screen_test`, `signup_screen_test`,
-      `base_screen_test` (drawer, header logado/deslogado, navegação).
-  - `dev_dependencies`: `fake_cloud_firestore`, `firebase_auth_mocks`,
-    `mock_exceptions` (este para simular `FirebaseAuthException` com
-    `whenCalling(...).on(auth).thenThrow(...)`).
-  - Injeção de dependência para testes: `UserManager({auth, firestore})` e
-    `ProductManager({firestore})` (padrão = `.instance`);
-    `AppUser.saveData(firestore)` / `firestoreRef(firestore)`.
-  - Correção de layout achada pelos testes: `CustomDrawerHeader` usa
-    `minHeight: 180` (antes altura fixa → overflow com fonte grande) e o título
-    do `DrawerTile` tem `Expanded` + reticências.
-  - Teste contra o Firebase real (web, `localhost:8080`): a lista de produtos
-    vinha vazia porque (1) as regras do Firestore (modo teste de 2020)
-    negavam tudo e (2) o único produto (`products/wB5C6ZrHMLZDjIHxdHgH`,
-    "Camiseta Branca") tem os campos `"description "` e `"images "` **com
-    espaço no final** (erro de digitação no console).
-  - Regras versionadas em `firestore.rules` (+ seção `firestore` no
-    `firebase.json`) e **publicadas** com `firebase deploy --only
-    firestore:rules` (2026-10-09): `products` leitura pública / escrita só
-    pelo console; `users/{uid}` só o próprio usuário.
-  - App mais robusto: `Product.fromDocument` tolera campos ausentes;
-    `ProductManager` registra `FirebaseException` com `debugPrint`;
-    `ProductListTile` mostra ícone sem imagem/erro de carga e usa
-    `WebHtmlElementStrategy.fallback` (imagens sem CORS na web).
+- Último passo concluído: **Dia 8** (pasta `android/` regenerada + APK) na
+  branch `dia-8-android-apk` — **aguardando aprovação** do usuário para merge
+  em `modernizacao`. (Dia 7 mergeado em `modernizacao` em 2026-10-13.)
+  - `android/` recriada com `flutter create --platforms=android --org
+    br.com.arthurmariano --project-name loja_virtual_pro .` (Gradle Kotlin DSL
+    `*.gradle.kts`, AGP 9.1, Kotlin 2.4, Java 17, `namespace` no Gradle).
+    Ícones antigos mantidos (idênticos ao template); `google-services.json`
+    recolocado em `android/app/` (o plugin Gradle `google-services` não é
+    aplicado: o app usa `firebase_options.dart`).
+  - Nome exibido no celular: `android:label="Loja Virtual Pro"`.
+  - `android/gradle.properties`: o template pede `-Xmx8G` e o daemon do Gradle
+    morria por falta de memória no WSL2 (7,6 GB) → `-Xmx3G`,
+    `MaxMetaspaceSize=1G`, `kotlin.daemon.jvmargs=-Xmx1G`.
+  - `android/.gitignore` ignora `/.kotlin/`; o `test/widget_test.dart` recriado
+    pelo `flutter create` foi apagado; arquivo solto
+    `antigo bild_gradle_setings.txt` removido.
+  - `flutter build apk` → `build/app/outputs/flutter-apk/app-release.apk`
+    (52,1 MB, assinado com a chave de debug). O build baixa o Android SDK
+    Platform 34 na hora (o SDK não fica em volume → baixa de novo a cada build).
 - `flutter analyze`: **0 issues**. `flutter test`: **42/42 passando**.
-- **Próximo passo:** Dia 8 (regenerar `android/` + gerar APK) na branch
-  `dia-8-android-apk`.
+- **Próximo passo:** usuário instalar o APK no celular e testar (login,
+  cadastro, produtos); após aprovação, merge em `modernizacao` e PR
+  `modernizacao` → `master`. Depois: painel admin web, iOS.
 - Pendências conhecidas:
-  - arquivo solto `antigo bild_gradle_setings.txt` na raiz (tratar no Dia 8);
-  - Dia 8: ao regenerar `android/`, garantir que o `google-services.json`
-    continue em `android/app/` (o app usa `firebase_options.dart`, então o
-    plugin Gradle `google-services` é opcional);
+  - APK de release ainda assinado com a chave de debug (criar keystore de
+    release antes de publicar na Play Store — nunca versionar);
   - **Dados do Firestore (usuário, pelo console):** renomear os campos
     `"description "` → `description` e `"images "` → `images` do produto;
     a 2ª URL de imagem (somarmalhas.com.br) dá 404.
@@ -156,3 +144,6 @@ docker compose run --rm --service-ports web            # http://localhost:8080
   (`firestore.rules`, publicadas); produtos tolerantes a campos ausentes e
   imagens sem CORS/quebradas; 42 testes.
 - **2026-10-13** — Dia 7 aprovado e mergeado em `modernizacao`.
+- **2026-10-13** — Dia 8: `android/` regenerada pelo template do Flutter
+  3.47.5 (branch `dia-8-android-apk`), memória do Gradle ajustada para o WSL2,
+  `app-release.apk` gerado; 42 testes passando.
